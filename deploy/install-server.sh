@@ -97,32 +97,11 @@ fi
 EOF
 chmod +x deploy/setup-environment.sh
 
-cat > deploy/deploy.sh <<'EOF'
-#!/usr/bin/env bash
-set -euo pipefail
-cd "$(dirname "$0")/.."
-cp .env.example .env 2>/dev/null || true
-export COMPOSE_HTTP_TIMEOUT=200
-/usr/bin/docker compose pull || true
-/usr/bin/docker compose up -d --build
-/usr/bin/docker compose ps
-EOF
-chmod +x deploy/deploy.sh
+# Note: deploy/deploy.sh is committed to the repository with proper error handling
+# Do not overwrite it here—trust the version from the repo
 
-cat > deploy/backup.sh <<'EOF'
-#!/usr/bin/env bash
-set -euo pipefail
-cd "$(dirname "$0")/.."
-BACKUP_DIR="$(pwd)/backups"
-mkdir -p "$BACKUP_DIR"
-source .env
-TIMESTAMP=$(date +"%F_%H%M%S")
-/usr/bin/docker exec -t webvory_postgres pg_dumpall -U "$POSTGRES_USER" > "$BACKUP_DIR/postgres_backup_$TIMESTAMP.sql"
-/usr/bin/docker exec -t webvory_redis redis-cli save
-cp -r /var/lib/redis/dump.rdb "$BACKUP_DIR/redis_backup_$TIMESTAMP.rdb" 2>/dev/null || true
-echo "Backups created in $BACKUP_DIR"
-EOF
-chmod +x deploy/backup.sh
+# Note: deploy/backup.sh is committed to the repository
+# Do not overwrite it here—trust the version from the repo
 
 echo "[11/11] Initializing repository skeleton in /opt/webvory..."
 if [[ ! -d /opt/webvory/.git ]]; then
