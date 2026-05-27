@@ -25,6 +25,21 @@ jobs:
       - name: Validate FastAPI app syntax
         run: python -m py_compile app/main.py
 
+      - name: Create .env file from secrets
+        run: |
+          cat > .env <<EOF
+          APP_ENV=${{ secrets.APP_ENV || 'production' }}
+          LOG_LEVEL=${{ secrets.LOG_LEVEL || 'INFO' }}
+          SECRET_KEY=${{ secrets.SECRET_KEY }}
+          POSTGRES_USER=${{ secrets.POSTGRES_USER }}
+          POSTGRES_PASSWORD=${{ secrets.POSTGRES_PASSWORD }}
+          POSTGRES_DB=${{ secrets.POSTGRES_DB }}
+          REDIS_HOST=${{ secrets.REDIS_HOST || 'redis' }}
+          REDIS_PORT=${{ secrets.REDIS_PORT || '6379' }}
+          SSL_DOMAIN=${{ secrets.SSL_DOMAIN || '' }}
+          DEPLOY_PATH=${{ secrets.DEPLOY_PATH || '/opt/webvory' }}
+          EOF
+
       - name: Ensure Docker Compose config is valid
         run: docker compose config
 

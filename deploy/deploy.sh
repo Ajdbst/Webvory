@@ -3,8 +3,13 @@ set -euo pipefail
 cd "$(dirname "$0")/.."
 
 if [[ ! -f .env ]]; then
-  echo "ERROR: .env file is missing. Copy .env.example to .env and update secrets before deploying."
-  exit 1
+  echo "WARNING: .env file is missing. Copying from .env.example..."
+  if [[ ! -f .env.example ]]; then
+    echo "ERROR: Neither .env nor .env.example found."
+    exit 1
+  fi
+  cp .env.example .env
+  echo "Created .env from .env.example. Review and update sensitive values if needed."
 fi
 
 echo "Pulling latest images and rebuilding the stack..."
