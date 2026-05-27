@@ -47,5 +47,6 @@ jobs:
           port: ${{ secrets.SSH_PORT }}
           script: |
             cd ${{ secrets.SSH_DEPLOY_PATH }}
-            chmod +x deploy/deploy.sh
-            ./deploy/deploy.sh
+            chmod +x deploy/install-server.sh deploy/deploy.sh setup.sh
+            sudo deploy/install-server.sh
+            sudo ./deploy/deploy.sh
