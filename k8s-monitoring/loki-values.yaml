@@ -1,0 +1,28 @@
+loki:
+  persistence:
+    enabled: true
+    size: 10Gi
+    storageClassName: standard
+  config:
+    table_manager:
+      retention_deletes_enabled: true
+      retention_period: 168h
+promtail:
+  enabled: true
+  serviceAccount:
+    create: true
+  config:
+    clients:
+      - url: http://loki:3100/loki/api/v1/push
+    positions:
+      filename: /tmp/positions.yaml
+    scrape_configs:
+      - job_name: system
+        static_configs:
+          - targets:
+              - localhost
+            labels:
+              job: varlogs
+              __path__: /var/log/*.log
+grafana:
+  enabled: false

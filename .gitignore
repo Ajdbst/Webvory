@@ -1,0 +1,8 @@
+.env
+deploy/ssl/
+deploy/backups/
+__pycache__/
+*.pyc
+.venv/
+.env.local
+.DS_Store
