@@ -9,10 +9,15 @@ fi
 
 echo "Pulling latest images and rebuilding the stack..."
 export COMPOSE_HTTP_TIMEOUT=200
-/usr/bin/docker compose pull || true
-/usr/bin/docker compose up -d --build --remove-orphans
+DOCKER_CMD="$(command -v docker || true)"
+if [[ -z "$DOCKER_CMD" ]]; then
+  echo "ERROR: docker is not installed or not in PATH. Please run deploy/install-server.sh first."
+  exit 1
+fi
+"$DOCKER_CMD" compose pull || true
+"$DOCKER_CMD" compose up -d --build --remove-orphans
 
 echo "Waiting for containers to stabilize..."
 sleep 8
-/usr/bin/docker compose ps
-/usr/bin/docker compose logs --tail=20 web nginx postgres redis
+"$DOCKER_CMD" compose ps
+"$DOCKER_CMD" compose logs --tail=20 web nginx postgres redis
